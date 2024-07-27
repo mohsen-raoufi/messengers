@@ -24,5 +24,3 @@ In the paper, we introduce the messengers method as a solution to break echo cha
 - **Post-Processing Scripts**: Code for analyzing the simulation results.
 - **Visualization Tools**: Scripts to generate visual representations of the simulation outcomes, including animations.
 
-## Getting Started
-
