@@ -26,10 +26,3 @@ In the paper, we introduce the messengers method as a solution to break echo cha
 
 ## Getting Started
 
-To get a local copy of the project up and running, follow these simple steps:
-
-#ToDo: complete the instructions
-
-1. **Clone the repository**
-   ```sh
-   git clone
