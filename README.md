@@ -1,3 +1,5 @@
+<img src="codes_for_paper/opinions/background_opinion_dynamics.jpg" width="1000"/>
+
 # Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily
 
 This repository contains all the code and resources accompanying the paper titled "Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily." 
