@@ -14,6 +14,7 @@ This repository contains all the code and resources accompanying the paper title
   - [Matlab Codes](#Matlabcodes)
   - [Julia Codes](#Juliacodes)
   - [Python Codes](#Pythoncodes)
+- [Data Availability](#data)
 - [Getting Started](#gettingstarted)
 - [License](#license)
 - [Contact](#contact)
@@ -64,6 +65,10 @@ You can find all the codes we used to generate the data from the agent-based sim
 Please find them in the [codes_for_paper](/codes_for_paper) folder.
 
 
+<a name="data" />
+
+## Data Availability
+The datasets generated and analyzed during the current study are available in [this](https://depositonce.tu-berlin.de/handle/11303/22195) repository. This dataset is needed to regenerate the figures of the paper. When you download the file, you can find a brief instruction on how to visualize the main result (Figure 5) in the readme.md file. 
 
 
 <a name="gettingstarted" />
@@ -84,3 +89,9 @@ Please find them in the [codes_for_paper](/codes_for_paper) folder.
 <a name="citation" />
 
 ## Citation
+
+If you use this software please cite the repository and the following papers.
+
+[1] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily. arXiv preprint arXiv:2406.06440. 
+
+[2] Raoufi, M., Hamann, H., & Romanczuk, P. (2024, July). Breaking Echo Chambers in Opinion Dynamics with Spatial Information. In ALIFE 2024: Proceedings of the 2024 Artificial Life Conference. MIT Press.
