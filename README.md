@@ -90,8 +90,9 @@ The datasets generated and analyzed during the current study are available in [t
 
 ## Citation
 
-If you use this software please cite the repository and the following papers.
+If you use this software and the dataset, you can use the following references to cite our work.
 
 [1] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily. arXiv preprint arXiv:2406.06440. 
 
-[2] Raoufi, M., Hamann, H., & Romanczuk, P. (2024, July). Breaking Echo Chambers in Opinion Dynamics with Spatial Information. In ALIFE 2024: Proceedings of the 2024 Artificial Life Conference. MIT Press.
+[2] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Simulation Dataset: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily.
+
