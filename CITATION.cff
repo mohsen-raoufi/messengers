@@ -15,19 +15,3 @@ version: 2.0.0
 doi: 10.48550/arXiv.2406.06440
 date-released: 2023-08-07
 url: "https://github.com/mohsen-raoufi/messengers"
-preferred-citation:
-  type: article
-  authors:
-  - family-names: "Raoufi"
-  given-names: "Mohsen"
-  orcid: "https://orcid.org/0000-0002-8637-7436"
-- family-names: "Hamann"
-  given-names: "Heiko"
-  orcid: "https://orcid.org/0000-0002-2458-8289"
-- family-names: "Romanczuk"
-  given-names: "Pawel"
-  orcid: "https://orcid.org/0000-0002-4733-998X"
-  doi: 10.48550/arXiv.2406.06440
-  journal: "arXiv preprint arXiv:2406.06440"
-  title: "Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily"
-  year: 2024
