@@ -3,3 +3,5 @@
 *.avi
 *.mp4
 *.pdf
+*.pkl
+/Python_test/__pycache__
