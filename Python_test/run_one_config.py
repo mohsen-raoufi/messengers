@@ -1,10 +1,6 @@
 import numpy as np
-import os
-import numpy as np
 from datetime import date
-from scipy.io import savemat
 import pickle
-
 import postpro as pp
 
 
@@ -495,7 +491,7 @@ def __main__(params=None):
 
 if __name__ == "__main__":
     print("Running one experiment from run_one_config.py", flush=True)
-    result = __main__()
+    result, params = __main__()
     print("Finished running one experiment")
 
-    pp.show_animation(result)
+    pp.show_animation(result=result, params=params)

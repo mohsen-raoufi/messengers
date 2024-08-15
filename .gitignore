@@ -5,3 +5,4 @@
 *.pdf
 *.pkl
 /Python_test/__pycache__
+/Python_test/msg_venv

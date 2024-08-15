@@ -1,13 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.io as sio
-import seaborn as sns
 import pickle
-
 from scipy.stats import gaussian_kde
-
 from matplotlib.animation import FuncAnimation
-
 import run_one_config as roc
 
 
