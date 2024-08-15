@@ -4,12 +4,14 @@ import scipy.io as sio
 import seaborn as sns
 import pickle
 
+from scipy.stats import gaussian_kde
+
 from matplotlib.animation import FuncAnimation
 
 import run_one_config as roc
 
 
-def plot_pos_net(pos, opinion, state, CMap, NPop, linkThresh, show_net_bool, marker_size, bool_from_arr=False, time=0, link_color=(153/255, 255/255, 204/255), fig=None, ax=None):
+def plot_pos_net(pos, opinion, state, CMap, NPop, linkThresh, show_net_bool=True, marker_size=40, bool_from_arr=False, time=0, link_color=(153/255, 255/255, 204/255), fig=None, ax=None, show_Msngrs=False):
     if bool_from_arr:
         pos = pos[:, :, time].reshape(2, -1)
         opinion = opinion[:, time].reshape(-1)
@@ -25,29 +27,26 @@ def plot_pos_net(pos, opinion, state, CMap, NPop, linkThresh, show_net_bool, mar
     colors = CMap(norm(opinion))
 
     if show_net_bool:
-        Adjc = np.zeros((NPop, NPop))
+        # Adjc = np.zeros((NPop, NPop))
+        Adjc = roc.get_adjacency_matrix(pos, linkThresh)
         for jj in range(NPop - 1):
             for ii in range(jj + 1, NPop):
-                if np.linalg.norm(pos[:, jj] - pos[:, ii]) < linkThresh:
-                    Adjc[ii, jj] = 1
+                if Adjc[jj, ii] == 1:
+                    ax.plot([pos[0, jj], pos[0, ii]], [pos[1, jj], pos[1, ii]], color=link_color, linewidth=1, zorder=0)
 
-                    ax.plot([pos[0, jj], pos[0, ii]], [pos[1, jj], pos[1, ii]], color=link_color, linewidth=1,zorder=0)
-        Adjc += Adjc.T
-
-    
     sc = ax.scatter(pos[0, state == 1], pos[1, state == 1], marker_size, colors[state == 1], edgecolor='none')
-    sc2 = ax.scatter(pos[0, state == 0], pos[1, state == 0], 1.5 * marker_size, colors[state == 0], edgecolor='r', linewidth=1.5)
+    if show_Msngrs:
+        sc2 = ax.scatter(pos[0, state == 0], pos[1, state == 0], 1.5 * marker_size, colors[state == 0], edgecolor='r', linewidth=1.5)
+    else:
+        sc2 = ax.scatter(pos[0, state == 0], pos[1, state == 0], 1.5 * marker_size, colors[state == 0], edgecolor='none')
 
     return sc, sc2, fig, ax
 
 
 
 def show_animation(result, params=-1):
-
-    from scipy.stats import gaussian_kde
-
     posArr = result['posArr']
-    opinionArr = result['zsArr']
+    opinionArr = result['zpArr']
     stateArr = result['stArr']
 
     if params == -1:
@@ -85,17 +84,19 @@ def show_animation(result, params=-1):
         # ax1.contour(xx, yy, zz, levels=[zEnv], linestyles='-.', linewidths=1.5, alpha=0.5)
         # ax1.contour(xx, yy, zz, linestyles='--', alpha=0.2)
 
-        scs_trace, scs_trace2 = [], []
+        # scs_trace, scs_trace2 = [], []
         for i_trace in range(nTrace):
             time_trace = max(1, time - i_trace * nSkipTrace)
             marker_size = (1 - (i_trace - 1) / nTrace) * 40 / 4
             
-            sc, sc2, _, _ = plot_pos_net(pos=posArr, opinion=opinionArr, state=stateArr, time=time_trace, CMap=CMap, NPop=NPop, linkThresh=linkThresh, show_net_bool=False, marker_size=marker_size, bool_from_arr=True, fig=fig, ax=ax1)
+            plot_pos_net(pos=posArr, opinion=opinionArr, state=stateArr, time=time_trace, CMap=CMap, NPop=NPop, 
+                                         linkThresh=linkThresh, show_net_bool=False, marker_size=marker_size, bool_from_arr=True, fig=fig, ax=ax1, show_Msngrs=False)
             # sc, sc2, _, _ = pp.plot_pos_net(pos=posArr, opinion=opinionArr, state=stateArr, time=time_trace, CMap=CMap, NPop=NPop, linkThresh=linkThresh, show_net_bool=True, marker_size=marker_size, bool_from_arr=True)
-            scs_trace.append(sc)
-            scs_trace2.append(sc2)
+            # scs_trace.append(sc)
+            # scs_trace2.append(sc2)
         
-        sc, sc2, _, _ = plot_pos_net(pos=posArr, opinion=opinionArr, state=stateArr, time=time, CMap=CMap, NPop=NPop, linkThresh=linkThresh, show_net_bool=True, marker_size=40, bool_from_arr=True, fig=fig, ax=ax1)
+        sc, sc2, _, _ = plot_pos_net(pos=posArr, opinion=opinionArr, state=stateArr, time=time, CMap=CMap, NPop=NPop, linkThresh=linkThresh, 
+                                     show_net_bool=True, marker_size=40, bool_from_arr=True, fig=fig, ax=ax1, show_Msngrs=True)
 
         ax1.set_xlim([-1, 1]); ax1.set_ylim([-1, 1])
         ax1.set_title('Time = ' + str(time)) 
@@ -134,14 +135,6 @@ def show_animation(result, params=-1):
             ax2.scatter((density) * np.random.rand(1), opinion, color=color, s=2, alpha=0.6)
 
 
-        # use seaborn swarm plot to show the distribution of opinions
-        # norm = plt.Normalize(0, 1)
-        # print(CMap(norm(opinions)).shape)
-        # ax2 = sns.stripplot(y=opinions, x=np.ones(NPop), ax=ax2, size=2, orient="v", jitter=0.1, palette=CMap(opinions))
-        # ax2 = sns.swarmplot(y=opinions, x=np.ones(NPop), ax=ax2, size=2, orient="v") 
-        # ax2 = sns.swarmplot(data=opinions, ax=ax2, size=2, orient="v") # CMap(norm(opinions)))
-        # ax2.scatter(np.ones_like(opinions), opinions, c=opinions, cmap=CMap, jitter=0.1, s=10)
-
         ax2.set_ylim([0, 1.5])
         # set xticks off
         ax2.set_xticks([])
@@ -154,20 +147,19 @@ def show_animation(result, params=-1):
 
 
 def __main__():
-    print("Running one experiment from run_one_config.py", flush=True)
-    res = roc.__main__()
-    print("finished running one experiment")
-
-    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_0.4k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.15__i_p2e_1__i_p2m_48.mat'
-    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.35__i_p2e_1__i_p2m_48.mat'
-    # res = sio.loadmat(file_name)
+    # print("Running one experiment from run_one_config.py", flush=True)
+    # result, params = roc.__main__()
+    # print("finished running one experiment")
     
-    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.35__i_p2e_1__i_p2m_48.pkl'
-    # # load pickle file
-    # res = pickle.load(open(file_name, 'rb'))
+
+    # # load from pickle file
+    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.4__i_p2e_14__i_p2m_3.pkl'
+    file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.4__i_p2e_35__i_p2m_44.pkl'
+    result = pickle.load(open(file_name, 'rb'))
+    params = pickle.load(open(file_name[:-4] + '_Params.pkl', 'rb'))
 
     print("showing animation ...")
-    show_animation(res)
+    show_animation(result, params=params)
 
     return 1
 

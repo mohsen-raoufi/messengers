@@ -5,8 +5,28 @@ from datetime import date
 from scipy.io import savemat
 import pickle
 
+import postpro as pp
 
-def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=1000, alpha=0.99, beta=0.9, sigma=0.001, p2explt=1.0, p2msngr=0.0, 
+
+def get_adjacency_matrix(pos, linkThresh):
+    """ Update the adjacency matrix based on the positions of agents and the link threshold.
+    args:
+        pos: Positions of agents
+        linkThresh: Link threshold for the spatial network
+    returns:
+        The updated adjacency matrix """
+    
+    NPop = pos.shape[1]
+    Adjc = np.zeros((NPop, NPop))
+    for jj in range(NPop-1):
+        for ii in range(jj+1, NPop):
+            if np.linalg.norm(pos[:, jj] - pos[:, ii]) < linkThresh:
+                Adjc[ii, jj] = 1
+    Adjc = Adjc + Adjc.T
+    return Adjc
+
+
+def func_run_experiment(landFunc, LB, initPos, linkThresh=0.5, tf=1000, nTVars=1000, alpha=0.99, beta=0.9, sigma=0.001, p2explt=1.0, p2msngr=0.0, 
                         randStep_exp=1.0, randStep_msg=0.0001, stepSize=0.002, init_messengers=True, randSeed=-1, bool_use_chain_gradient=True):
     """ Run the experiment with the given parameters and return the results. 
     The function is a Python implementation of the funcEEM_Markov_new function in the MATLAB script.
@@ -32,25 +52,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
     returns:
         A dictionary containing the arrays of interest (posArr, zsArr, zpArr, etc.) """
 
-
-    def update_adjacency_matrix(pos, linkThresh):
-        """ Update the adjacency matrix based on the positions of agents and the link threshold.
-        args:
-            pos: Positions of agents
-            linkThresh: Link threshold for the spatial network
-        returns:
-            The updated adjacency matrix """
-        
-        NPop = pos.shape[1]
-        Adjc = np.zeros((NPop, NPop))
-        for jj in range(NPop-1):
-            for ii in range(jj+1, NPop):
-                if np.linalg.norm(pos[:, jj] - pos[:, ii]) < linkThresh:
-                    Adjc[ii, jj] = 1
-        Adjc = Adjc + Adjc.T
-        return Adjc
-
-    def calculate_walk(Walk, ZS, local_consensus, grad, rndWalkU, randStep, swch, stepSize, time, bool_use_chain_gradient=False):
+    def calculate_walk(Walk, ZS, local_consensus, grad, rndWalkU, randStep, swch, stepSize, time, bool_use_chain_gradient=True):
         """ Implementation of the pseudo-gradient descend: Make a step based on the approximation of gradient and a component of random walk 
         args:
             Walk: Current walk of agents
@@ -102,7 +104,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
     pos = initPos.copy()
 
     ## calculate the (initial) adjacency matrix based on pos and linkThresh
-    Adjc = update_adjacency_matrix(initPos, linkThresh)
+    Adjc = get_adjacency_matrix(initPos, linkThresh)
 
     # calculate the initial reading from the landscape function
     ZR = landFunc(initPos[0, :], initPos[1, :])
@@ -192,6 +194,8 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
         else:
             # this is the actual objective function, when not using the approximation of the chain rule
             objFArr = (ZP - ZS)**2
+
+
         # difference of the objective function from the last time frame
         diffObjF = objFArr - objFArrOld
         # update the old objective function value
@@ -212,7 +216,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
 
         
         # update the oriention of messengers with a bit of inertia and random walk: for a bit more balistic movement than a pure random walk
-        rot_inertia_msg = 0.075
+        rot_inertia_msg = 0.1
         rndOrient[swch != 1] += rot_inertia_msg * np.random.uniform(-np.pi, np.pi, np.sum(swch != 1))
         rndOrient[swch == 1] = np.random.uniform(-np.pi, np.pi, np.sum(swch == 1))
 
@@ -220,7 +224,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
         rndWalkU = np.array([np.cos(rndOrient), np.sin(rndOrient)])
 
         # calculate the walk, based on the ZS and the local consensus, the gradient, and the random walk component
-        Walk = calculate_walk(Walk, ZS, local_consensus, grad, rndWalkU, randStep, swch, stepSize, time)
+        Walk = calculate_walk(Walk=Walk, ZS=ZS, local_consensus=local_consensus, grad=grad, rndWalkU=rndWalkU, randStep=randStep, swch=swch, stepSize=stepSize, time=time, bool_use_chain_gradient=bool_use_chain_gradient)
 
         # if there is any NaN in the walk, set it to a random walk
         if np.isnan(Walk).any():
@@ -270,7 +274,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
             Walk[:, indPassed] = stepSize * np.array([np.cos(rndOrient[indPassed]), np.sin(rndOrient[indPassed])])
 
         # update the adjacency matrix based on the new positions
-        Adjc = update_adjacency_matrix(pos, linkThresh)
+        Adjc = get_adjacency_matrix(pos, linkThresh)
 
         # save the results  (if it is the time to save)
         if time % nSkipSave == 0:
@@ -293,33 +297,32 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=
         # "debugArr": debugArr
     }
 
-    # Example of how to call the function with appropriate parameters:
-    # Define the necessary input functions and variables
-    # landFunc = lambda x, y: np.sin(x) + np.cos(y)  # Example landscape function
-    # LB = np.array([[0, 10], [0, 10]])  # Lower and upper bounds for x and y
-    # pos = np.random.rand(2, 100) * 10  # Initial positions of 100 agents
-    # linkThresh = 1.0  # Link threshold
-    # tf = 1000  # Total time frames
-    # nTVars = 100  # Number of time variables
-    # alpha = 0.5  # Alpha parameter
-    # beta = 0.9  # Beta parameter
-    # sigma = 0.001  # Sigma for noise
-    # p2explt = 0.3  # Probability to become an exploiter
-    # p2msngr = 0.7  # Probability to become a messenger
-
-    # Run the function
-    # result = funcEEM_Markov_new(landFunc, LB, pos, linkThresh, tf, nTVars, neibZS, alpha, beta, sigma, p2explt, p2msngr, randStep0, randStep2, stepSize)
-
-    # The result will be a dictionary containing the arrays of interest (posArr, zsArr, zpArr, etc.)
-
-
-
 def __main__(params=None):
 
     if(params is None):
         # index of the parameters for probabilities in DMP (according to the paper)
-        i_p2e = 1
-        i_p2m = 48
+
+        # Try the following preset parameters
+
+        ## No Messenger
+        # i_p2e = 0
+        # i_p2m = 48
+
+        ## Fast Switching Messengers (enhanced exploration) (majority exploiters)
+        # i_p2e = 6
+        # i_p2m = 7
+
+        ## Fast Switching Messengers (majority messengers) (needs longer simulations)
+        # i_p2e = 14
+        # i_p2m = 3
+
+        ## Specialized few Messengers
+        i_p2e = 35
+        i_p2m = 44
+
+        ## All Messengers
+        # i_p2e = 48
+        # i_p2m = 0
 
         ### Simulation parameters
         tf = int(10e2)
@@ -362,7 +365,26 @@ def __main__(params=None):
 
         # # sine shape x, y
         # land_func_name = 'sine2_x_y'
-        # landFunc_nonScaled = lambda x, y: np.sin(2*np.pi*x) + np.sin(2*np.pi*y)        
+        # landFunc_nonScaled = lambda x, y: np.sin(2*np.pi*x) + np.sin(2*np.pi*y)     
+
+        # make a dictionary of params 
+        params = {
+            'i_p2e': i_p2e,
+            'i_p2m': i_p2m,
+            'tf': tf,
+            'nTVars': nTVars,
+            'NPop': NPop,
+            'linkThresh': linkThresh,
+            'ArenaScale': ArenaScale,
+            'alpha': alpha,
+            'beta': beta,
+            'sigma': sigma,
+            'randStep_msg': randStep_msg,
+            'randStep_exp': randStep_exp,
+            'stepSize': stepSize,
+            'land_func_name': land_func_name,
+        } 
+           
         
     
     else:
@@ -386,8 +408,6 @@ def __main__(params=None):
         ### Landscape function
         land_func_name = params['land_func_name']
         landFunc_nonScaled = params['landFunc_nonScaled']
-
-
 
     # Land bounds and initialization
     landBounds = ArenaScale * np.array([[-1, 1], [-1, 1]])
@@ -415,7 +435,6 @@ def __main__(params=None):
     p2msngr = p2msngrArr[i_p2m]
 
 
-
     # Filename for saving results
     dateStr = date.today().strftime("%Y_%m_%d")
     mainStrng = f"data/single_run_{dateStr}__NPop_{NPop}_Arena_{ArenaScale}__tf_{tf/1000}k__" \
@@ -430,22 +449,8 @@ def __main__(params=None):
 
     # save the parameters into a pickle file
     with open(params_strng.replace('.mat', '.pkl'), 'wb') as f:
-        pickle.dump({
-            'i_p2e': i_p2e,
-            'i_p2m': i_p2m,
-            'tf': tf,
-            'nTVars': nTVars,
-            'NPop': NPop,
-            'linkThresh': linkThresh,
-            'ArenaScale': ArenaScale,
-            'alpha': alpha,
-            'beta': beta,
-            'sigma': sigma,
-            'randStep_msg': randStep_msg,
-            'randStep_exp': randStep_exp,
-            'stepSize': stepSize,
-            'land_func_name': land_func_name
-        }, f)
+        # save params into a pickle file
+        pickle.dump(params, f)
 
     # # Initialize empty variables
     # dummy variables: here they don't have any use, but in the monte-carlo simulation, they will be used, so I kept them here too.
@@ -469,12 +474,6 @@ def __main__(params=None):
                                 alpha=alpha, beta=beta, sigma=sigma, p2explt=p2explt, p2msngr=p2msngr,
                                 randStep_msg=randStep_msg, randStep_exp=randStep_exp, stepSize=stepSize)
 
-    
-    # z1MeanArr[0, 0, :, iMC], z1StdArr[0, 0, :, iMC], posArr[0, 0, :, :, :, iMC], \
-    # stateArr[0, 0, :, :, iMC], zpArr[0, 0, :, :, iMC], zsArr[0, 0, :, :, iMC], _ = result
-
-    # # Save the results
-    # savemat(mainStrng, result)
 
 
     # savemat(mainStrng, {
@@ -490,14 +489,13 @@ def __main__(params=None):
     with open(mainStrng.replace('.mat', '.pkl'), 'wb') as f:
         pickle.dump(result, f)
 
-    return result
+    return result, params
 
-    # Close all plots
-    # (If you are using matplotlib, you can close all figures with plt.close('all'))
-
-    # Optionally, you can include code for video generation or plotting as in the MATLAB script
-    # res_video_maker_paper_with_opinion_distr()
 
 
 if __name__ == "__main__":
-    __main__()
+    print("Running one experiment from run_one_config.py", flush=True)
+    result = __main__()
+    print("Finished running one experiment")
+
+    pp.show_animation(result)
