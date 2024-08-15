@@ -58,6 +58,9 @@ You can find all the codes we used to generate the data from the agent-based sim
 
 ### Python Codes
 
+[This folder](/Python_test) contains the codes to run a sample simulation of the model in Python. 
+For further information on how to set up the environment, please check the readme.md file in the folder.
+
 
 <a name="codesforpaper" />
 
