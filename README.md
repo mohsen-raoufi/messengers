@@ -90,9 +90,23 @@ The datasets generated and analyzed during the current study are available in [t
 
 ## Citation
 
-If you use this software and the dataset, you can use the following references to cite our work.
+If you use this software and the dataset in your research, please cite our work as following:
 
 [1] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily. arXiv preprint arXiv:2406.06440. 
-
 [2] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Simulation Dataset: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily.
+
+bibTex format:
+@article{raoufi2024messengers,
+  title={Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily},
+  author={Raoufi, Mohsen and Hamann, Heiko and Romanczuk, Pawel},
+  journal={arXiv preprint arXiv:2406.06440},
+  year={2024}
+}
+
+@article{raoufi2024simulation,
+  title={Simulation Dataset: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily},
+  author={Raoufi, Mohsen and Hamann, Heiko and Romanczuk, Pawel},
+  year={2024}
+}
+
 
