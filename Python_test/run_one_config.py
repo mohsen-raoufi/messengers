@@ -6,7 +6,8 @@ from scipy.io import savemat
 import pickle
 
 
-def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000, alpha=0.99, beta=0.9, sigma=0.001, p2explt=1.0, p2msngr=0.0, randStep_exp=1.0, randStep_msg=0.0001, stepSize=0.002, init_messengers=True, randSeed=-1):
+def func_run_experiment(landFunc, LB, initPos, linkThresh=0.15, tf=1000, nTVars=1000, alpha=0.99, beta=0.9, sigma=0.001, p2explt=1.0, p2msngr=0.0, 
+                        randStep_exp=1.0, randStep_msg=0.0001, stepSize=0.002, init_messengers=True, randSeed=-1, bool_use_chain_gradient=True):
     """ Run the experiment with the given parameters and return the results. 
     The function is a Python implementation of the funcEEM_Markov_new function in the MATLAB script.
     args:
@@ -24,12 +25,14 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000,
         randStep_exp: Random step for exploiters
         randStep_msg: Random step for messengers
         stepSize: Step size for movement of agents in space
-        init_messengers: Flag to initialize messengers based on the given probabilities p2explt and p2msngr, otherwise initialize all as exploiters
+        init_messengers: Flag to initialize messengers based on the given probabilities p2explt and p2msngr, otherwise initialize all as exploiters,
+        randSeed: Random seed for reproducibility, if -1, no seed is set
+        bool_use_chain_gradient: Flag to use the approximation of the chain rule in pseudo-gradient descend
         
     returns:
         A dictionary containing the arrays of interest (posArr, zsArr, zpArr, etc.) """
 
-    
+
     def update_adjacency_matrix(pos, linkThresh):
         """ Update the adjacency matrix based on the positions of agents and the link threshold.
         args:
@@ -47,7 +50,7 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000,
         Adjc = Adjc + Adjc.T
         return Adjc
 
-    def calculate_walk(Walk, ZS, local_consensus, grad, rndWalkU, randStep, swch, stepSize, time):
+    def calculate_walk(Walk, ZS, local_consensus, grad, rndWalkU, randStep, swch, stepSize, time, bool_use_chain_gradient=False):
         """ Implementation of the pseudo-gradient descend: Make a step based on the approximation of gradient and a component of random walk 
         args:
             Walk: Current walk of agents
@@ -59,13 +62,19 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000,
             swch: Switching array
             stepSize: Step size for movement of agents in space
             time: Current time frame
+            bool_use_chain_gradient: Flag to use the approximation of the chain rule in pseudo-gradient descend
         returns:
             The updated walk of agents """
         
         if time > 2:
-            # NOTE: here we use (ZS-local_consensus) and multiply it by the gradient as an approximation of the dissonance gradient (ZS-local_consensus)^2 
-            # assuming the local_consensus (LC) is constant, then we can say that the gradient G = (ZS-LC)^2~2*(ZS-LC)*d(ZS-LC)/dZS = 2*(ZS-LC)*grad
-            Walk = (1-randStep) * (ZS - local_consensus) * (np.sum(Adjc, axis=0) / (1 + np.sum(Adjc, axis=0))) * grad
+            if(bool_use_chain_gradient):
+                # NOTE: here we use (ZS-local_consensus) and multiply it by the gradient as an approximation of the dissonance gradient (ZS-local_consensus)^2 
+                # assuming the local_consensus (LC) is constant, then we can say that the gradient G = (ZS-LC)^2~2*(ZS-LC)*d(ZS-LC)/dZS = 2*(ZS-LC)*grad
+                Walk = (1-randStep) * (ZS - local_consensus) * (np.sum(Adjc, axis=0) / (1 + np.sum(Adjc, axis=0))) * grad
+            else:
+                # use this for the actual pseudo-gradient descend, without the approximation of the chain rule
+                Walk = (1-randStep) * grad
+
             Walk += randStep * rndWalkU
             Walk = -stepSize * normc(Walk)
         else:
@@ -175,8 +184,14 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000,
 
         #### do the pseudo-gradient descend
         ## calculate the objective function value based on the measurement of the landscape function 
-        # NOTE: that the actual objective function is something like (ZP-ZS)^2, but we put this into the walk update function where we used (ZS - neigh)
-        objFArr = ZS
+
+        
+        if(bool_use_chain_gradient):
+            # NOTE: that the actual objective function is something like (ZP-ZS)^2, but we put this into the walk update function where we used (ZS - neigh)
+            objFArr = ZS
+        else:
+            # this is the actual objective function, when not using the approximation of the chain rule
+            objFArr = (ZP - ZS)**2
         # difference of the objective function from the last time frame
         diffObjF = objFArr - objFArrOld
         # update the old objective function value
@@ -267,9 +282,6 @@ def func_run_experiment(landFunc, LB, initPos, linkThresh, tf=1000, nTVars=1000,
             stArr[:, saveCtr] = swch
             debugArr[:, saveCtr] = np.arctan2(Walk[1, :], Walk[0, :])
             saveCtr += 1
-
-            if(time>30):
-                dmb = 0
             
     return {
         "posArr": posArr,
@@ -313,7 +325,7 @@ def __main__(params=None):
         tf = int(10e2)
         nTVars = int(10e2) 
         NPop = 100
-        linkThresh = 0.35
+        linkThresh = 0.4
         ArenaScale = 1.0
 
         alpha = 0.99

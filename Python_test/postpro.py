@@ -154,17 +154,17 @@ def show_animation(result, params=-1):
 
 
 def __main__():
-    # print("Running one experiment from run_one_config.py", flush=True)
-    # res = roc.__main__()
-    # print("finished running one experiment")
+    print("Running one experiment from run_one_config.py", flush=True)
+    res = roc.__main__()
+    print("finished running one experiment")
 
     # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_0.4k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.15__i_p2e_1__i_p2m_48.mat'
     # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.35__i_p2e_1__i_p2m_48.mat'
     # res = sio.loadmat(file_name)
     
-    file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.35__i_p2e_1__i_p2m_48.pkl'
-    # load pickle file
-    res = pickle.load(open(file_name, 'rb'))
+    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.35__i_p2e_1__i_p2m_48.pkl'
+    # # load pickle file
+    # res = pickle.load(open(file_name, 'rb'))
 
     print("showing animation ...")
     show_animation(res)
