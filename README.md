@@ -11,9 +11,10 @@ This repository contains all the code and resources accompanying the paper title
 - [Paper Abstract](#paper_abstract)
 - [Contents](#contents)
   - [Codes for Paper](#codesforpaper)
-  - [Matlab Codes](#Matlabcodes)
-  - [Julia Codes](#Juliacodes)
   - [Python Codes](#Pythoncodes)
+<!---
+  - [Matlab Codes](#Matlabcodes)
+  - [Julia Codes](#Juliacodes) -->
 - [Data Availability](#data)
 - [Getting Started](#gettingstarted)
 - [License](#license)
