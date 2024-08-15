@@ -42,6 +42,7 @@ Collective estimation is a variant of collective decision-making, where agents n
 You can find all the codes we used to generate the data from the agent-based simulations, and to post-process and visualize the figures of the paper in the [codes for paper](/codes_for_paper) folder. We also provided separate codes for single agent-based simulation in 3 different programming languages to enhance the accessibility of the simulations. We originally developed the code in [Matlab](#Matlabcodes), and a 1-dimensional case in [Julia](#Juliacodes). We are developing a recent translation of the codes in [Python](#Pythoncodes).
 
 
+<!---
 <a name="Matlabcodes" />
 
 ### Matlab Codes
@@ -51,6 +52,7 @@ You can find all the codes we used to generate the data from the agent-based sim
 <a name="Juliacodes" />
 
 ### Julia Codes
+-->
 
 
 
@@ -65,7 +67,8 @@ For further information on how to set up the environment, please check the readm
 <a name="codesforpaper" />
 
 ### Codes for Paper
-Please find them in the [codes_for_paper](/codes_for_paper) folder.
+Please find them in the [codes_for_paper](/codes_for_paper) folder. The folder contains all the codes we used to generate the data, postprocess them, and visualize them in figures of the paper. 
+Apart from the sample experiments with animation of the result, you can find the codes we used to do the parameter scan. 
 
 
 <a name="data" />
