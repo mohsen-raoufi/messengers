@@ -2,6 +2,7 @@ import numpy as np
 from datetime import date
 import pickle
 import postpro as pp
+import os
 
 # added chmod
 def get_adjacency_matrix(pos, linkThresh):
@@ -433,9 +434,14 @@ def __main__(params=None):
 
     # Filename for saving results
     dateStr = date.today().strftime("%Y_%m_%d")
+    # Get the file directory and use it to save the results
+    cur_dir = os.path.dirname(os.path.realpath(__file__))
+
     mainStrng = f"data/single_run_{dateStr}__NPop_{NPop}_Arena_{ArenaScale}__tf_{tf/1000}k__" \
                 f"landFunc__{land_func_name}__BasicMarkov__initENumMsngr_sensRang_{linkThresh}__" \
                 f"i_p2e_{i_p2e}__i_p2m_{i_p2m}.mat"
+    
+    mainStrng = os.path.join(cur_dir, mainStrng)
     
 
 
