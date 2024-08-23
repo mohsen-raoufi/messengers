@@ -3,7 +3,7 @@ from datetime import date
 import pickle
 import postpro as pp
 
-
+# added chmod
 def get_adjacency_matrix(pos, linkThresh):
     """ Update the adjacency matrix based on the positions of agents and the link threshold.
     args:
