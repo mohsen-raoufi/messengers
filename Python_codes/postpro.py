@@ -142,16 +142,16 @@ def show_animation(result, params=-1):
 
 
 def __main__():
-    # print("Running one experiment from run_one_config.py", flush=True)
-    # result, params = roc.__main__()
-    # print("finished running one experiment")
+    print("Running one experiment from run_one_config.py", flush=True)
+    result, params = roc.__main__()
+    print("finished running one experiment")
     
 
     # # load from pickle file
     # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.4__i_p2e_14__i_p2m_3.pkl'
-    file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.4__i_p2e_35__i_p2m_44.pkl'
-    result = pickle.load(open(file_name, 'rb'))
-    params = pickle.load(open(file_name[:-4] + '_Params.pkl', 'rb'))
+    # file_name = 'data/single_run_2024_08_15__NPop_100_Arena_1.0__tf_1.0k__landFunc__cone__BasicMarkov__initENumMsngr_sensRang_0.4__i_p2e_35__i_p2m_44.pkl'
+    # result = pickle.load(open(file_name, 'rb'))
+    # params = pickle.load(open(file_name[:-4] + '_Params.pkl', 'rb'))
 
     print("showing animation ...")
     show_animation(result, params=params)
