@@ -1,3 +1,29 @@
+"""
+Title: Post-processing and Visualization of a Single Simulation Run
+
+Description: This script contains the functions needed to post processes and visualizes data from the simulation of the opinion dynamics model. 
+The script either reads the data from a pickle file or runs an independent simulation. Then it shows an animation of the simulation run. 
+The animation shows the evolution of the opinion dynamics and the movement of the agents in the environment. 
+Depending on the parameters, you can observe how messengers break echo chambers in collective opinion dynamics with homophily.
+
+Author: Mohsen Raoufi
+
+Contact: mohsenraoufi@icloud.com
+
+Affiliation: Research Cluster of Excellence, "Science of Intelligence"
+
+Date Created: August, 2024
+
+Version: 1.0
+
+Usage: Run this script with Python 3.8 or later. Ensure you create a "data" directory in the working directory before execution.
+
+License: Distributed under the MIT License. See LICENSE.txt for more information.
+
+Citation: Please cite our work if you use this code:
+"Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily"
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle

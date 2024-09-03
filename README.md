@@ -82,6 +82,10 @@ The datasets generated and analyzed during the current study are available in [t
 
 ## Getting Started
 
+Matlab codes: you just need to run them on a proper version of Matlab. The current version of the codes run on Version 2023.a - 2024.a. It is not likely, but other versions might need slight adjustments.
+
+Python codes: are provided with a test code, environment requirements.txt file, and a Docker image file. Please 
+
 
 <a name="license" />
 
