@@ -5,6 +5,6 @@
 *.pdf
 *.pkl
 /Python_test/__pycache__
-/Python_test/msg_venv
-/Python_codes/msg_venv
+/Python_test/msg_venv/
+/Python_codes/msg_venv/
 /Python_codes/__pycache__
