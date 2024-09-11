@@ -106,6 +106,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Contact
 
+For any questions, issues, or suggestions, please feel free to reach out to [me](https://github.com/mohsen-raoufi). We appreciate your feedback and contributions!
 
 <a name="citation" />
 
