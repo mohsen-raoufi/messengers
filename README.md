@@ -121,11 +121,15 @@ If you use this software and the dataset in your research, please cite our work 
 bibTex format:
 
 ```
-@article{raoufi2024messengers,
-  title={Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily},
+@article{raoufi2025messengers,
+  title={Messengers: Breaking echo chambers in collective opinion dynamics with homophily},
   author={Raoufi, Mohsen and Hamann, Heiko and Romanczuk, Pawel},
-  journal={arXiv preprint arXiv:2406.06440},
-  year={2024}
+  journal={npj Complexity},
+  volume={2},
+  number={1},
+  pages={28},
+  year={2025},
+  publisher={Nature Publishing Group UK London}
 }
 
 @article{raoufi2024simulation,
