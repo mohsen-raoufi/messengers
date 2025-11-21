@@ -114,7 +114,7 @@ For any questions, issues, or suggestions, please feel free to reach out to [me]
 
 If you use this software and the dataset in your research, please cite our work as following:
 
-[1] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily. arXiv preprint arXiv:2406.06440. 
+[1] Raoufi, M., Hamann, H., & Romanczuk, P. (2025). Messengers: Breaking echo chambers in collective opinion dynamics with homophily. npj Complexity, 2(1), 28.
 
 [2] Raoufi, M., Hamann, H., & Romanczuk, P. (2024). Simulation Dataset: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily.
 
