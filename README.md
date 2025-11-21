@@ -2,7 +2,7 @@
 
 # Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily
 
-This repository contains all the code and resources accompanying the paper titled "Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily." The preprint of the paper is available on arXiv [here](https://arxiv.org/abs/2406.06440).
+This repository contains all the code and resources accompanying the paper titled "Messengers: Breaking Echo Chambers in Collective Opinion Dynamics with Homophily." The paper is available on Nature Portfolio Journal (NPJ) Complexity [here](https://www.nature.com/articles/s44260-025-00052-0).
 
 
 ## Table of Contents
